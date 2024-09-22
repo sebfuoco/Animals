@@ -31,9 +31,9 @@ public partial class Animals
 
     private async Task CreateAnimal()
     {
-        if (_animal.Tag?.Length != 14)
+        if (_animal.Tag?.Length != 15)
         {
-            _error = "tag must be 14 characters";
+            _error = "tag must be 15 characters";
             return;
         }
         AnimalDto animalDto = new()
