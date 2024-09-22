@@ -1,0 +1,48 @@
+﻿@page "/groups"
+@using Application.Dtos
+@using Domain.Entities
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<PageTitle>Groups</PageTitle>
+
+<h1>Groups</h1>
+
+@if (!_hasLoaded)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Date Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (_groups is not null)
+            {
+                @foreach (GroupDto group in _groups)
+                {
+                    string url = "group-details/" + @group.Id.ToString();
+                    <tr>
+                        <td>@group.Id.ToString()</td>
+                        <td>@group.Name</td>
+                        <td>@group.DateCreated.ToString()</td>
+                        <td>
+                            <NavLink class="nav-link" href="@url">
+                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Edit
+                            </NavLink>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <p>Group Name</p>
+    <InputText @bind-Value="_group.Name" placeholder="enter name" maxlength="100"></InputText>
+    <button type="button" class="btn btn-primary" @onclick="CreateGroup">Create</button>
+}

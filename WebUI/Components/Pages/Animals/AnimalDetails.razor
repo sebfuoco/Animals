@@ -1,0 +1,41 @@
+﻿@page "/animal-details/{id:guid}"
+@using Application.Dtos
+@using Domain.Entities
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<PageTitle>Animal Details</PageTitle>
+
+<h1>Animal Details: @_animal?.Tag</h1>
+
+@if (!hasLoaded)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @if(_animal is not null)
+    {
+        <div class="row">
+            <p>Animal Tag</p>
+            <InputText @bind-Value="_animal.Tag" placeholder="UKXXXXXXX XXXXX" maxlength="15"></InputText>
+        </div>
+        <div class="row">
+            <p>Animal Date of Birth</p>
+            <InputDate @bind-Value="_animal.DateOfBirth"></InputDate>
+        </div>
+        <div class="row">
+
+            <p>Animal Group</p>
+            <InputSelect @bind-Value="_group.Id">
+                @foreach (GroupDto group in _groups)
+                {
+                    <option value="@group.Id">@group.Name</option>
+                }
+            </InputSelect>
+        </div>
+        <button type="button" class="btn btn-primary" @onclick="UpdateAnimal">Update Animnal</button>
+    }
+
+
+}

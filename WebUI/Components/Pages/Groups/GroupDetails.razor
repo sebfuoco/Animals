@@ -1,0 +1,48 @@
+﻿@page "/group-details/{id:guid}"
+@using Application.Dtos
+@using Domain.Entities
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<PageTitle>Group Details</PageTitle>
+
+<h1>Group Details: @_group?.Name</h1>
+
+@if (!hasLoaded)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <p>Group name</p>
+        <InputText @bind-Value="_group.Name" placeholder="enter name" maxlength="100"></InputText>
+    </div>
+    <button type="button" class="btn btn-primary" @onclick="UpdateGroup">Update Group</button>
+
+    @if (_animals is not null)
+    {
+        <h1>Animals in group</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Tag</th>
+                    <th>Date Of Birth</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (AnimalDto animal in _animals)
+                {
+                    <tr>
+                        <td>@animal.Id</td>
+                        <td>@animal.Tag</td>
+                        <td>@animal.DateOfBirth</td>
+                        <td @onclick="async() => await RemoveAnimalFromGroup(animal)">Remove</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}

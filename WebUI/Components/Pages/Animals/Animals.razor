@@ -1,0 +1,82 @@
+﻿@page "/animals"
+@using Application.Dtos
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<PageTitle>Animals</PageTitle>
+
+<h1>Animals</h1>
+
+@if (!_hasLoaded)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Tag</th>
+                <th>Date of Birth</th>
+                <th>Groups</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (_animals is not null)
+            {
+                @foreach (AnimalDto animal in _animals)
+                {
+                    string url = "animal-details/" + @animal.Id.ToString();
+
+                    <tr>
+                        <td>@animal.Id.ToString()</td>
+                        <td>@animal.Tag</td>
+                        <td>@animal.DateOfBirth.ToString()</td>
+                        <td>
+                            @if (animal.AnimalGroups is not null)
+                            {
+                                @foreach (AnimalGroupDto animalGroup in animal.AnimalGroups)
+                                {
+                                    <p>@animalGroup.Group?.Name</p>
+                                }
+                            }
+                        </td>
+                        <td>
+                            <NavLink class="nav-link" href="@url">
+                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Edit
+                            </NavLink>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <div class="row">
+        <p>Animal Tag</p>
+        <InputText @bind-Value="_animal.Tag" placeholder="UKXXXXXXX XXXXX" maxlength="15"></InputText>
+    </div>
+    <div class="row">
+        <p>Animal Date of Birth</p>
+        <InputDate @bind-Value="_animal.DateOfBirth"></InputDate>
+    </div>
+    <div class="row">
+
+        <p>Animal Group</p>
+        <InputSelect @bind-Value="_group.Id">
+            @foreach (GroupDto group in _groups)
+            {
+                <option value="@group.Id">@group.Name</option>
+            }
+        </InputSelect>
+        <p>Animal Group 2</p>
+        <InputSelect @bind-Value="_group2.Id">
+            @foreach (GroupDto group in _groups)
+            {
+                <option value="@group.Id">@group.Name</option>
+            }
+        </InputSelect>
+    </div>
+    <button type="button" class="btn btn-primary" @onclick="CreateAnimal">Create Animal</button>
+    <p style="color:red;">@_error</p>
+}
