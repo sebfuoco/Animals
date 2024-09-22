@@ -59,8 +59,8 @@ namespace WebUI.Controllers
         public async Task CreateGroup(GroupDto group)
         {
             //await _mediator.Send(request, cancellationToken);
-            List<string> groupNames = await _dbContext.Groups.Select(x => x.Name).ToListAsync();
-            if (!groupNames.Contains(group.Name))
+            List<string> groupNames = await _dbContext.Groups.Select(x => x.Name).Where(x => x == group.Name).ToListAsync();
+            if (groupNames.Count == 0)
             {
                 Group createGroup = new()
                 {
@@ -77,9 +77,9 @@ namespace WebUI.Controllers
         public async Task UpdateGroup(GroupDto groupDto)
         {
             Group group = await _dbContext.Groups.Where(x => x.Id == groupDto.Id).FirstOrDefaultAsync();
-            List<string> groupNames = await _dbContext.Groups.Select(x => x.Name).ToListAsync();
+            List<string> groupNames = await _dbContext.Groups.Select(x => x.Name).Where(x => x == groupDto.Name).ToListAsync();
 
-            if (!groupNames.Contains(groupDto.Name))
+            if (groupNames.Count == 0)
             {
                 group.Name = groupDto.Name;
                 await _dbContext.SaveChangesAsync();

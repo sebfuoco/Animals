@@ -56,8 +56,8 @@ namespace WebUI.Controllers
         [HttpPost("create")]
         public async Task CreateAnimals(AnimalDto animalDto)
         {
-            List<string> animalTags = await _dbContext.Animals.Select(x => x.Tag).ToListAsync();
-            if (!animalTags.Contains(animalDto.Tag))
+            List<string> animalTags = await _dbContext.Animals.Select(x => x.Tag).Where(x => x == animalDto.Tag).ToListAsync();
+            if (animalTags.Count == 0)
             {
                 Animal createAnimal = new()
                 {
@@ -89,9 +89,9 @@ namespace WebUI.Controllers
         public async Task UpdateAnimals(AnimalDto animalDto)
         {
             Animal animal = await _dbContext.Animals.FirstOrDefaultAsync(x => x.Id == animalDto.Id);
-            List<string> animalTags = await _dbContext.Animals.Select(x => x.Tag).ToListAsync();
+            List<string> animalTags = await _dbContext.Animals.Select(x => x.Tag).Where(x => x == animalDto.Tag).ToListAsync();
 
-            if (!animalTags.Contains(animalDto.Tag))
+            if (animalTags.Count == 0)
             {
                 animal.Tag = animalDto.Tag;
                 animal.DateOfBirth = animalDto.DateOfBirth;
