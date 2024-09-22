@@ -25,7 +25,7 @@ namespace WebUI.Controllers
         public async Task<List<GroupDto>> GetAllGroups()
         {
             //return await _mediator.Send(request, cancellationToken);
-            List<Group> groups = await _dbContext.Groups.ToListAsync();
+            List<Group> groups = await _dbContext.Groups.AsNoTracking().ToListAsync();
             List<GroupDto> groupDtos = new();
             foreach (Group group in groups)
             {
@@ -45,7 +45,7 @@ namespace WebUI.Controllers
         public async Task<GroupDto> GetGroup(MinimalGroupDto groupParam)
         {
             //return await _mediator.Send(request, cancellationToken);
-            Group group = await _dbContext.Groups.Where(x => x.Id == groupParam.Id).FirstOrDefaultAsync();
+            Group group = await _dbContext.Groups.AsNoTracking().Where(x => x.Id == groupParam.Id).FirstOrDefaultAsync();
             GroupDto groupDto = new()
             {
                 Id = group.Id,

@@ -20,7 +20,7 @@ namespace WebUI.Controllers
         [HttpPost("getall-animalgroup")]
         public async Task<List<AnimalDto>> GetAllAnimalByAnimalGroupId(MinimalGroupDto groupDto)
         {
-            List<AnimalGroups> animalGroups = await _dbContext.AnimalGroups.Where(x => x.GroupId == groupDto.Id).ToListAsync();
+            List<AnimalGroups> animalGroups = await _dbContext.AnimalGroups.AsNoTracking().Where(x => x.GroupId == groupDto.Id).ToListAsync();
             List<AnimalDto> animalsDto = new();
 
             foreach (AnimalGroups animalGroup in animalGroups)
@@ -40,7 +40,7 @@ namespace WebUI.Controllers
         [HttpPost("get-animalgroup")]
         public async Task<List<string>> GetAnimalGroup(MinimalAnimalDto animalDto)
         {
-            List<AnimalGroups> animalGroups = await _dbContext.AnimalGroups.Where(x => x.AnimalId == animalDto.Id).ToListAsync();
+            List<AnimalGroups> animalGroups = await _dbContext.AnimalGroups.AsNoTracking().Where(x => x.AnimalId == animalDto.Id).ToListAsync();
             List<string> groups = new();
 
             foreach (AnimalGroups animalGroup in animalGroups)

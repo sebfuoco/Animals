@@ -24,7 +24,7 @@ namespace WebUI.Controllers
         public async Task<List<AnimalDto>> GetAllAnimals()
         {
             //return await _mediator.Send(new GetAllAnimalRequest());
-            List<Animal> animals = await _dbContext.Animals.ToListAsync();
+            List<Animal> animals = await _dbContext.Animals.AsNoTracking().ToListAsync();
             List<AnimalDto> animalsDto = new();
             foreach (Animal animal in animals)
             {
@@ -43,7 +43,7 @@ namespace WebUI.Controllers
         [HttpPost("get")]
         public async Task<AnimalDto> GetAnimal(MinimalAnimalDto animalParam)
         {
-            Animal animal = await _dbContext.Animals.FirstOrDefaultAsync(x => x.Id == animalParam.Id);
+            Animal animal = await _dbContext.Animals.AsNoTracking().FirstOrDefaultAsync(x => x.Id == animalParam.Id);
             AnimalDto animalDto = new()
             {
                 Id = animal.Id,
