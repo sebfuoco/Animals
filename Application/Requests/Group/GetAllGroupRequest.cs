@@ -1,18 +1,31 @@
-﻿using Domain.Interfaces;
+﻿using Application.Dtos;
+using Infrastructure.Repositories;
 using MediatR;
-using GroupObj = Domain.Entities.Group;
 
 namespace Application.Requests.Animal
 {
-    public class GetAllGroupRequest() : IRequest<List<GroupObj>>;
+    public class GetAllGroupRequest() : IRequest<List<GroupDto>>;
 
-    public class GetAllGroupRequestHandler(IGroupRepository groupRepo) : IRequestHandler<GetAllGroupRequest, List<GroupObj>>
+    public class GetAllGroupRequestHandler(GroupRepository groupRepository) : IRequestHandler<GetAllGroupRequest, List<GroupDto>>
     {
-        private readonly IGroupRepository _groupRepo = groupRepo;
+        private readonly GroupRepository _groupRepository = groupRepository;
 
-        public async Task<List<GroupObj>> Handle(GetAllGroupRequest request, CancellationToken cancellationToken)
+        public async Task<List<GroupDto>> Handle(GetAllGroupRequest request, CancellationToken cancellationToken)
         {
-           return _groupRepo.GetAll();
+            List<Domain.Entities.Group> groups = await _groupRepository.GetAllAsync();
+            List<GroupDto> groupDtos = new();
+            foreach (Domain.Entities.Group group in groups)
+            {
+                GroupDto groupDto = new()
+                {
+                    Id = group.Id,
+                    Name = group.Name,
+                    DateCreated = group.DateCreated,
+                };
+
+                groupDtos.Add(groupDto);
+            }
+            return groupDtos;
         }
     }
 }

@@ -1,6 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using Infrastructure.Repositories;
 using MediatR;
-using GroupObj = Domain.Entities.Group;
 
 namespace Application.Requests.Group
 {
@@ -8,19 +7,22 @@ namespace Application.Requests.Group
     {
         public required string Name { get; set; }
     }
-    public class CreateGroupRequestHandler(IGroupRepository groupRepo) : IRequestHandler<CreateGroupRequest>
+    public class CreateGroupRequestHandler(GroupRepository groupRepository) : IRequestHandler<CreateGroupRequest>
     {
-        private readonly IGroupRepository _groupRepo = groupRepo;
-
+        private readonly GroupRepository _groupRepository = groupRepository;
         public async Task Handle(CreateGroupRequest request, CancellationToken cancellationToken)
         {
-            GroupObj group = new()
+            List<string> groupNames = await _groupRepository.GetAllByNameAsync(request.Name);
+            if (groupNames.Count == 0)
             {
-                Id = Guid.NewGuid(),
-                Name = request.Name,
-                DateCreated = DateTime.Now
-            };
-            _groupRepo.Add(group);
+                Domain.Entities.Group group = new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = request.Name,
+                    DateCreated = DateTime.Now
+                };
+                await _groupRepository.CreateAsync(group);
+            }
         }
     }
 }

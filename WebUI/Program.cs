@@ -1,8 +1,7 @@
+using Application.Requests.Animal;
 using Infrastructure;
-using Microsoft.AspNetCore.Hosting;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Configuration;
 using WebUI.Components;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -16,14 +15,14 @@ builder.Services.AddScoped(sp =>
     {
         BaseAddress = new Uri("https://localhost:5001")
     });
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-
-//builder.Services.AddDbContextPool<DataContext>(options =>
-//           options.UseSqlServer(builder.Configuration.GetConnectionString("BlexzWebConnection")));
+builder.Services.AddScoped<AnimalRepository>();
+builder.Services.AddScoped<GroupRepository>();
+builder.Services.AddScoped<AnimalGroupRepository>();
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetAllAnimalRequest>());
 
 WebApplication app = builder.Build();
 

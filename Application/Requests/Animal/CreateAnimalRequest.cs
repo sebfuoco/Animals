@@ -1,26 +1,46 @@
-﻿using Domain.Interfaces;
+﻿using Application.Dtos;
+using Domain.Entities;
+using Infrastructure.Repositories;
 using MediatR;
-using AnimalObj = Domain.Entities.Animal;
 
 namespace Application.Requests.Animal
 {
     public class CreateAnimalRequest() : IRequest
     {
-        public required string Tag { get; set; }
+        public required AnimalDto AnimalDto { get; set; }
     }
-    public class CreateAnimalRequestHandler(IAnimalRepository animalRepo) : IRequestHandler<CreateAnimalRequest>
+    public class CreateAnimalRequestHandler(AnimalRepository animalRepository) : IRequestHandler<CreateAnimalRequest>
     {
-        private readonly IAnimalRepository _animalRepo = animalRepo;
+        private readonly AnimalRepository _animalRepository = animalRepository;
 
         public async Task Handle(CreateAnimalRequest request, CancellationToken cancellationToken)
         {
-            AnimalObj animal = new() 
+            List<string> animalTags = await _animalRepository.GetAllByTagAsync(request.AnimalDto.Tag);
+            if (animalTags.Count == 0)
             {
-                Id = Guid.NewGuid(),
-                Tag = request.Tag,
-                DateOfBirth = DateTime.Now
-            };
-            _animalRepo.Add(animal);
+                Domain.Entities.Animal createAnimal = new()
+                {
+                    Id = Guid.NewGuid(),
+                    Tag = request.AnimalDto.Tag,
+                    DateOfBirth = DateTime.Now,
+                };
+                if (request.AnimalDto.AnimalGroups is not null)
+                {
+                    foreach (AnimalGroupDto animalGroupDto in request.AnimalDto.AnimalGroups)
+                    {
+                        AnimalGroups animalGroup = new()
+                        {
+                            Id = Guid.NewGuid(),
+                            AnimalId = createAnimal.Id,
+                            GroupId = animalGroupDto.Group.Id
+                        };
+                        createAnimal.AnimalGroups ??= new List<AnimalGroups>();
+                        createAnimal.AnimalGroups.Add(animalGroup);
+                    }
+                }
+
+                await _animalRepository.CreateAsync(createAnimal);
+            }
         }
     }
 }

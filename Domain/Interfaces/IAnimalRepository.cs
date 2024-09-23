@@ -4,9 +4,10 @@ namespace Domain.Interfaces
 {
     public interface IAnimalRepository
     {
-        List<Animal> GetAll();
-        Animal Get(Guid id);
-        void Add(Animal animal);
-        void Update(Animal animal);
+        public Task<List<Animal>> GetAllAsync();
+        public Task<Animal?> GetAsync(Guid id);
+        public Task<List<string>> GetAllByTagAsync(string tag);
+        public Task CreateAsync(Animal animal);
+        public Task UpdateAsync();
     }
 }

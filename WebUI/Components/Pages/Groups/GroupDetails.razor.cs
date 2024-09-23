@@ -47,7 +47,7 @@ public partial class GroupDetails
         };
         string inputJson = JsonSerializer.Serialize(groupDto);
         StringContent content = new(inputJson, Encoding.UTF8, "application/json");
-        HttpResponseMessage response = await _client.PostAsync("animalgroups/getall-animalgroup", content);
+        HttpResponseMessage response = await _client.PostAsync("animalgroups/getall", content);
         if (response.IsSuccessStatusCode)
         {
             string json = response.Content.ReadAsStringAsync().Result;

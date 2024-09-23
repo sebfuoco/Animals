@@ -1,16 +1,29 @@
-﻿using Domain.Interfaces;
+﻿using Application.Dtos;
 using MediatR;
-using AnimalObj = Domain.Entities.Animal;
-
+using Infrastructure.Repositories;
 namespace Application.Requests.Animal
 {
-    public class GetAllAnimalRequest() : IRequest<List<AnimalObj>>;
-    public class GetAllAnimalRequestHandler(IAnimalRepository animalRepo) : IRequestHandler<GetAllAnimalRequest, List<AnimalObj>>
+    public class GetAllAnimalRequest() : IRequest<List<AnimalDto>>;
+    public class GetAllAnimalRequestHandler(AnimalRepository animalRepository) : IRequestHandler<GetAllAnimalRequest, List<AnimalDto>>
     {
-        private readonly IAnimalRepository _animalRepo = animalRepo;
-        public async Task<List<AnimalObj>> Handle(GetAllAnimalRequest request, CancellationToken cancellationToken)
+        private readonly AnimalRepository _animalRepository = animalRepository;
+
+        public async Task<List<AnimalDto>> Handle(GetAllAnimalRequest request, CancellationToken cancellationToken)
         {
-            return _animalRepo.GetAll();
+            List<Domain.Entities.Animal> animals = await _animalRepository.GetAllAsync();
+            List<AnimalDto> animalsDto = new();
+            foreach (Domain.Entities.Animal animal in animals)
+            {
+                AnimalDto animalDto = new()
+                {
+                    Id = animal.Id,
+                    Tag = animal.Tag,
+                    DateOfBirth = animal.DateOfBirth,
+                };
+
+                animalsDto.Add(animalDto);
+            }
+            return animalsDto;
         }
     }
 }

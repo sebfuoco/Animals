@@ -1,5 +1,4 @@
 using Application.Dtos;
-using Domain.Entities;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -32,7 +31,7 @@ public partial class Animals
 
     private async Task CreateAnimal()
     {
-        Regex pattern = new("^UK\\d{7} \\d{5}%");
+        Regex pattern = AnimalTagPattern();
         if (_animal.Tag?.Length != 15)
         {
             _error = "tag must be 15 characters";
@@ -99,7 +98,7 @@ public partial class Animals
                 };
                 string inputJson2 = JsonSerializer.Serialize(animalId);
                 StringContent content = new(inputJson2, Encoding.UTF8, "application/json");
-                HttpResponseMessage response2 = await _client.PostAsync("animalgroups/get-animalgroup", content);
+                HttpResponseMessage response2 = await _client.PostAsync("animalgroups/get", content);
                 if (response.IsSuccessStatusCode)
                 {
                     string json2 = response2.Content.ReadAsStringAsync().Result;
@@ -131,4 +130,7 @@ public partial class Animals
             _groups = JsonSerializer.Deserialize<List<GroupDto>>(json);
         }
     }
+
+    [GeneratedRegex("^UK\\d{7} \\d{5}")]
+    private static partial Regex AnimalTagPattern();
 }

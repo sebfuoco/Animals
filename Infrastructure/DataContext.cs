@@ -1,16 +1,10 @@
-﻿
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure
 {
-    public class DataContext : DbContext
+    public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options)
-        {
-
-        }
-
         public DbSet<Animal> Animals { get; set; }
         public DbSet<AnimalGroups> AnimalGroups { get; set; }
         public DbSet<Group> Groups { get; set; }
@@ -22,6 +16,12 @@ namespace Infrastructure
                 .WithOne(e => e.Animal)
                 .HasForeignKey(e => e.AnimalId)
                 .IsRequired(false);
+
+            modelBuilder.Entity<Animal>()
+                .HasIndex(p => p.Tag);
+
+            modelBuilder.Entity<Group>()
+                .HasIndex(p => p.Name);
 
             base.OnModelCreating(modelBuilder);
         }
