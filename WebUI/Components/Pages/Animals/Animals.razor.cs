@@ -2,6 +2,7 @@ using Application.Dtos;
 using Domain.Entities;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace WebUI.Components.Pages.Animals;
 public partial class Animals
@@ -12,8 +13,8 @@ public partial class Animals
     {
         DateOfBirth = DateTime.Now
     };
-    private Group _group = new();
-    private Group _group2 = new();
+    private GroupDto _group = new();
+    private GroupDto _group2 = new();
     private bool _hasLoaded;
     private string _error = string.Empty;
 
@@ -31,11 +32,18 @@ public partial class Animals
 
     private async Task CreateAnimal()
     {
+        Regex pattern = new("^UK\\d{7} \\d{5}%");
         if (_animal.Tag?.Length != 15)
         {
             _error = "tag must be 15 characters";
             return;
         }
+        else if (!pattern.IsMatch(_animal.Tag))
+        {
+            _error = "invalid format: UKXXXXXXX XXXXX";
+            return;
+        }
+
         AnimalDto animalDto = new()
         {
             Tag = _animal.Tag,

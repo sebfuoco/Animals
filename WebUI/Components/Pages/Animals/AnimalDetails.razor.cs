@@ -1,7 +1,10 @@
 using Application.Dtos;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.FileSystemGlobbing.Internal;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebUI.Components.Pages.Animals;
 public partial class AnimalDetails
@@ -13,6 +16,8 @@ public partial class AnimalDetails
     private List<GroupDto> _groups;
     private GroupDto _group = new();
     private bool hasLoaded;
+    private string _error = string.Empty;
+
     private static HttpClient _client = new()
     {
         BaseAddress = new Uri("https://localhost:7032/api/")
@@ -52,6 +57,17 @@ public partial class AnimalDetails
 
     private async Task UpdateAnimal()
     {
+        Regex pattern = new("^UK\\d{7} \\d{5}%");
+        if (_animal.Tag?.Length != 15)
+        {
+            _error = "tag must be 15 characters";
+            return;
+        }
+        else if (!pattern.IsMatch(_animal.Tag))
+        {
+            _error = "invalid format: UKXXXXXXX XXXXX";
+            return;
+        }
         string inputJson = JsonSerializer.Serialize(_animal);
         StringContent content = new(inputJson, Encoding.UTF8, "application/json");
         HttpResponseMessage response = await _client.PostAsync("animals/update", content);
