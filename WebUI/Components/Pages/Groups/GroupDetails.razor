@@ -14,16 +14,8 @@
 }
 else
 {
-    <div class="row">
-        <p>Group name</p>
-        <InputText @bind-Value="_group.Name" placeholder="enter name" maxlength="100"></InputText>
-    </div>
-    <button type="button" class="btn btn-primary" @onclick="UpdateGroup">Update Group</button>
-
     @if (_animals is not null)
     {
-        <h1>Animals in group</h1>
-
         <table class="table">
             <thead>
                 <tr>
@@ -45,4 +37,15 @@ else
             </tbody>
         </table>
     }
+
+    <h1>Update Group</h1>
+
+    <div class="row mb-4">
+        <div class="col-6">
+            <p>Group name</p>
+            <InputText @bind-Value="_group.Name" placeholder="enter name" maxlength="100"></InputText>
+        </div>
+    </div>
+    <button type="button" class="btn btn-primary" @onclick="UpdateGroup">Update Group</button>
+
 }

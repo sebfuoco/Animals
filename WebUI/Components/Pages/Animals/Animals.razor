@@ -52,30 +52,38 @@ else
             }
         </tbody>
     </table>
-    <div class="row">
-        <p>Animal Tag</p>
-        <InputText @bind-Value="_animal.Tag" placeholder="UKXXXXXXX XXXXX" maxlength="15"></InputText>
-    </div>
-    <div class="row">
-        <p>Animal Date of Birth</p>
-        <InputDate @bind-Value="_animal.DateOfBirth"></InputDate>
-    </div>
-    <div class="row">
 
-        <p>Animal Group</p>
-        <InputSelect @bind-Value="_group.Id">
-            @foreach (GroupDto group in _groups)
-            {
-                <option value="@group.Id">@group.Name</option>
-            }
-        </InputSelect>
-        <p>Animal Group 2</p>
-        <InputSelect @bind-Value="_group2.Id">
-            @foreach (GroupDto group in _groups)
-            {
-                <option value="@group.Id">@group.Name</option>
-            }
-        </InputSelect>
+    <h1>Create Animal</h1>
+
+    <div class="row mb-4">
+        <div class="col-6">
+            <p>Animal Tag</p>
+            <InputText @bind-Value="_animal.Tag" placeholder="UKXXXXXXX XXXXX" maxlength="15"></InputText>
+        </div>
+        <div class="col-6">
+            <p>Animal Date of Birth</p>
+            <InputDate @bind-Value="_animal.DateOfBirth"></InputDate>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-6">
+            <p>Animal Group</p>
+            <InputSelect @bind-Value="_group.Id">
+                @foreach (GroupDto group in _groups)
+                {
+                    <option value="@group.Id">@group.Name</option>
+                }
+            </InputSelect>
+        </div>
+        <div class="col-6">
+            <p>Animal Group 2</p>
+            <InputSelect @bind-Value="_group2.Id">
+                @foreach (GroupDto group in _groups)
+                {
+                    <option value="@group.Id">@group.Name</option>
+                }
+            </InputSelect>
+        </div>
     </div>
     <button type="button" class="btn btn-primary" @onclick="CreateAnimal">Create Animal</button>
     <p style="color:red;">@_error</p>
